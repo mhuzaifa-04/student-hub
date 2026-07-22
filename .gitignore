@@ -1,3 +1,27 @@
+# Environment Files
+
+.env
+.env.local
+
+# Build Files
+
+dist/
+
+# Dependencies
+
+node_modules/
+
+# Angular Cache
+
+.angular/
+
+# VS Code Settings
+
+.vscode/
+
+# Logs
+
+*.log
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
