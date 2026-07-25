@@ -1,1 +1,104 @@
-<p>signup works!</p>
+<div class="container mt-5">
+
+  <div class="row justify-content-center">
+
+    <div class="col-md-5">
+
+      <div class="card shadow-sm">
+
+        <div class="card-body p-4">
+
+          <h2 class="mb-4">
+            Create Account
+          </h2>
+
+
+          <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+
+
+            <!-- EMAIL -->
+
+            <div class="mb-3">
+
+              <label class="form-label">
+                Email
+              </label>
+
+              <input class="form-control" type="email" formControlName="email">
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="mb-3">
+
+              <label class="form-label">
+                Password
+              </label>
+
+              <input class="form-control" type="password" formControlName="password">
+
+            </div>
+
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div class="mb-3">
+
+              <label class="form-label">
+                Confirm Password
+              </label>
+
+              <input class="form-control" type="password" formControlName="confirmPassword">
+
+            </div>
+
+
+            @if (errorMessage) {
+
+              <div class="alert alert-danger">
+                {{ errorMessage }}
+              </div>
+
+            }
+
+
+            @if (successMessage) {
+
+              <div class="alert alert-success">
+                {{ successMessage }}
+              </div>
+
+            }
+
+
+            <button class="btn btn-primary w-100" type="submit" [disabled]="loading">
+
+              {{ loading ? 'Creating Account...' : 'Sign Up' }}
+
+            </button>
+
+
+          </form>
+
+
+          <p class="mt-3 mb-0">
+
+            Already have an account?
+
+            <a routerLink="/login">
+              Login
+            </a>
+
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

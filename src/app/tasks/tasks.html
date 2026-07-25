@@ -1,0 +1,323 @@
+<div class="container mt-5">
+
+  <h2 class="mb-4">
+    Tasks
+  </h2>
+
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+
+
+    <!-- TITLE -->
+
+    <div class="mb-3">
+
+      <label class="form-label">
+        Title
+      </label>
+
+      <input class="form-control" type="text" formControlName="title">
+
+      @if (title?.touched && title?.hasError('required')) {
+        <small class="text-danger">
+          Title is required.
+        </small>
+      }
+
+      @if (title?.touched && title?.hasError('minlength')) {
+        <small class="text-danger">
+          Title must contain at least 3 characters.
+        </small>
+      }
+
+    </div>
+
+
+    <!-- DESCRIPTION -->
+
+    <div class="mb-3">
+
+      <label class="form-label">
+        Description
+      </label>
+
+      <textarea class="form-control" rows="4" formControlName="description"></textarea>
+
+    </div>
+
+
+    <!-- CATEGORY -->
+
+    <div class="mb-3">
+
+      <label class="form-label">
+        Category
+      </label>
+
+      <select class="form-select" formControlName="category">
+
+        <option value="">
+          Select Category
+        </option>
+
+        @for (category of categories; track category) {
+
+          <option [value]="category">
+            {{ category }}
+          </option>
+
+        }
+
+      </select>
+
+    </div>
+
+
+    <!-- PRIORITY -->
+
+    <div class="mb-3">
+
+      <label class="form-label">
+        Priority
+      </label>
+
+      <select class="form-select" formControlName="priority">
+
+        <option value="">
+          Select Priority
+        </option>
+
+        @for (priority of priorities; track priority) {
+
+          <option [value]="priority">
+            {{ priority }}
+          </option>
+
+        }
+
+      </select>
+
+    </div>
+
+
+    <!-- STATUS -->
+
+    <div class="mb-3">
+
+      <label class="form-label">
+        Status
+      </label>
+
+      <select class="form-select" formControlName="status">
+
+        <option value="">
+          Select Status
+        </option>
+
+        @for (status of statuses; track status) {
+
+          <option [value]="status">
+            {{ status }}
+          </option>
+
+        }
+
+      </select>
+
+    </div>
+
+
+    <!-- DEADLINE -->
+
+    <div class="mb-3">
+
+      <label class="form-label">
+        Deadline
+      </label>
+
+      <input class="form-control" type="date" formControlName="deadline">
+
+    </div>
+
+
+    <!-- SUBMIT -->
+
+    <button class="btn btn-primary" type="submit">
+
+      {{ editingTaskId ? 'Update Task' : 'Add Task' }}
+
+    </button>
+
+
+    <!-- CANCEL EDIT -->
+
+    @if (editingTaskId) {
+
+      <button class="btn btn-secondary ms-2" type="button" (click)="cancelEdit()">
+
+        Cancel
+
+      </button>
+
+    }
+
+  </form>
+
+ 
+
+
+  <hr class="my-5">
+
+<div class="row g-2 mb-4">
+
+  <div class="col-md-3">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Search tasks..."
+      [(ngModel)]="searchText">
+  </div>
+
+  <div class="col-md-3">
+    <select
+      class="form-select"
+      [(ngModel)]="selectedCategory">
+
+      <option value="">All Categories</option>
+
+      @for (category of categories; track category) {
+        <option [value]="category">
+          {{ category }}
+        </option>
+      }
+
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <select
+      class="form-select"
+      [(ngModel)]="selectedPriority">
+
+      <option value="">All Priorities</option>
+
+      @for (priority of priorities; track priority) {
+        <option [value]="priority">
+          {{ priority }}
+        </option>
+      }
+
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <select
+      class="form-select"
+      [(ngModel)]="selectedStatus">
+
+      <option value="">All Statuses</option>
+
+      @for (status of statuses; track status) {
+        <option [value]="status">
+          {{ status }}
+        </option>
+      }
+
+    </select>
+  </div>
+
+</div>
+
+  <!-- TASK LIST -->
+
+  <h2 class="mb-3">
+    My Tasks
+  </h2>
+
+
+  @if (filteredTasks.length === 0) {
+
+  <div class="alert alert-info">
+    No matching tasks found.
+  </div>
+
+} @else {
+
+    @for (task of filteredTasks; track task.id) {
+
+      <div class="card mb-3">
+
+        <div class="card-body">
+
+          <h5 class="card-title">
+            {{ task.title }}
+          </h5>
+
+
+          @if (task.description) {
+
+            <p class="card-text">
+              {{ task.description }}
+            </p>
+
+          }
+
+
+          <div class="mb-1">
+
+            <strong>Category:</strong>
+
+            {{ task.category }}
+
+          </div>
+
+
+          <div class="mb-1">
+
+            <strong>Priority:</strong>
+
+            {{ task.priority }}
+
+          </div>
+
+
+          <div class="mb-1">
+
+            <strong>Status:</strong>
+
+            {{ task.status }}
+
+          </div>
+
+
+          @if (task.deadline) {
+
+            <div class="mb-3">
+
+              <strong>Deadline:</strong>
+
+              {{ task.deadline }}
+
+            </div>
+
+          }
+
+
+          <!-- EDIT -->
+
+          <button class="btn btn-warning mt-3" type="button" (click)="editTask(task)">
+  Edit
+</button>
+
+<button class="btn btn-danger mt-3 ms-2" type="button" (click)="deleteTask(task)">
+  Delete
+</button>
+
+        </div>
+
+      </div>
+
+    }
+
+  }
+
+</div>
