@@ -4,12 +4,13 @@ import { LoginComponent } from './auth/login/login';
 import { SignupComponent } from './auth/signup/signup';
 import { DashboardComponent } from './dashboard/dashboard';
 import { TasksComponent } from './tasks/tasks';
+import { NotesComponent } from './notes/notes';
 
 export const routes: Routes = [
 
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'notes',
     pathMatch: 'full'
   },
 
@@ -31,6 +32,11 @@ export const routes: Routes = [
   {
     path: 'tasks',
     component: TasksComponent
+  },
+
+  {
+    path: "notes",
+    component: NotesComponent
   }
 
 ];
