@@ -1,0 +1,190 @@
+<div class="container mt-5">
+
+  <h2 class="mb-4">
+    Resources
+  </h2>
+
+
+  <!-- UPLOAD FORM -->
+
+  <form [formGroup]="resourceForm" (ngSubmit)="onSubmit()">
+
+
+    <div class="mb-3">
+
+      <label class="form-label">
+        Title
+      </label>
+
+      <input class="form-control" type="text" formControlName="title" placeholder="Resource title">
+
+    </div>
+
+
+    <div class="mb-3">
+
+      <label class="form-label">
+        Subject
+      </label>
+
+      <input class="form-control" type="text" formControlName="subject" placeholder="Example: DBMS">
+
+    </div>
+
+
+    <div class="mb-3">
+
+      <label class="form-label">
+        File
+      </label>
+
+      <input class="form-control" id="resourceFile" type="file" (change)="onFileSelected($event)">
+
+    </div>
+
+
+    @if (selectedFile) {
+
+      <div class="alert alert-secondary">
+
+        Selected:
+
+        <strong>
+          {{ selectedFile.name }}
+        </strong>
+
+      </div>
+
+    }
+
+
+    <button class="btn btn-primary" type="submit" [disabled]="uploading">
+
+      {{
+        uploading
+          ? 'Uploading...'
+          : 'Upload Resource'
+      }}
+
+    </button>
+
+  </form>
+
+
+  <hr class="my-5">
+
+
+  <h2 class="mb-4">
+    My Resources
+  </h2>
+
+
+  @if (resources.length === 0) {
+
+    <div class="alert alert-info">
+
+      No resources uploaded yet.
+
+    </div>
+
+  }
+
+
+  @for (
+    resource of resources;
+    track resource.id
+  ) {
+
+    <div class="card mb-3">
+
+      <div class="card-body">
+
+        <h5 class="card-title">
+
+          {{ resource.title }}
+
+        </h5>
+
+
+        @if (resource.subject) {
+
+          <p>
+
+            <strong>
+              Subject:
+            </strong>
+
+            {{ resource.subject }}
+
+          </p>
+
+        }
+
+
+        <p>
+
+          <strong>
+            File:
+          </strong>
+
+          {{ resource.file_name }}
+
+        </p>
+
+
+        @if (resource.file_type) {
+
+          <p>
+
+            <strong>
+              Type:
+            </strong>
+
+            {{ resource.file_type }}
+
+          </p>
+
+        }
+
+
+        @if (resource.file_size) {
+
+          <p>
+
+            <strong>
+              Size:
+            </strong>
+
+            {{
+              resource.file_size /
+              1024 /
+              1024
+              | number:'1.2-2'
+            }}
+            MB
+
+          </p>
+
+        }
+
+
+        <button class="btn btn-success" type="button" (click)="openResource(resource)">
+
+          Open
+
+        </button>
+
+
+        <button class="btn btn-danger ms-2" type="button" (click)="deleteResource(resource)">
+
+          Delete
+
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

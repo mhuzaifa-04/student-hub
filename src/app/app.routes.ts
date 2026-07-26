@@ -5,6 +5,7 @@ import { SignupComponent } from './auth/signup/signup';
 import { DashboardComponent } from './dashboard/dashboard';
 import { TasksComponent } from './tasks/tasks';
 import { NotesComponent } from './notes/notes';
+import { ResourcesComponent } from './resources/resources';
 
 export const routes: Routes = [
 
@@ -37,6 +38,11 @@ export const routes: Routes = [
   {
     path: "notes",
     component: NotesComponent
+  },
+
+  {
+    path: "resources",
+    component: ResourcesComponent
   }
 
 ];
