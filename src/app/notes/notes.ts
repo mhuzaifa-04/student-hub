@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -39,7 +39,10 @@ export class NotesComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private noteService: NoteService
+    private noteService: NoteService,
+    private cdr: ChangeDetectorRef
+    // private ngZone: NgZone
+
   ) {}
 
 
@@ -109,9 +112,14 @@ export class NotesComponent implements OnInit {
       return;
     }
 
+    // this.ngZone.run(() => {
+    // });
     this.notes = data ?? [];
 
     console.log('Loaded notes:', this.notes);
+
+      this.cdr.detectChanges();
+
   }
 
 

@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef ,Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   FormBuilder,
   FormGroup,
-  
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
@@ -59,7 +58,10 @@ selectedCategory = '';
 
   constructor(
     private fb: FormBuilder,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private cdr: ChangeDetectorRef
+    // private ngZone: NgZone
+
   ) {}
 
 
@@ -151,9 +153,14 @@ selectedCategory = '';
       return;
     }
 
+    //  this.ngZone.run(() => {
+    // });
     this.tasks = data ?? [];
 
     console.log('Loaded tasks:', this.tasks);
+
+      this.cdr.detectChanges();
+
   }
 
 

@@ -6,6 +6,7 @@ import { DashboardComponent } from './dashboard/dashboard';
 import { TasksComponent } from './tasks/tasks';
 import { NotesComponent } from './notes/notes';
 import { ResourcesComponent } from './resources/resources';
+import { Admin } from './admin/admin';
 
 export const routes: Routes = [
 
@@ -43,6 +44,11 @@ export const routes: Routes = [
   {
     path: "resources",
     component: ResourcesComponent
-  }
+  },
+
+  {
+  path: 'admin',
+  component: Admin
+}
 
 ];

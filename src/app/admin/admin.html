@@ -1,0 +1,481 @@
+<div class="container py-5">
+
+  <!-- HEADER -->
+
+  <div class="mb-5">
+
+    <h1>
+      Admin Dashboard
+    </h1>
+
+    <p class="text-muted">
+      Student Hub system overview
+    </p>
+
+  </div>
+
+
+  <!-- STATISTICS -->
+
+  <div class="row g-3 mb-5">
+
+
+    <!-- USERS -->
+
+    <div class="col-md-6 col-lg-3">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <p class="text-muted mb-2">
+            Total Users
+          </p>
+
+          <h2>
+            {{ totalUsers }}
+          </h2>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- TASKS -->
+
+    <div class="col-md-6 col-lg-3">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <p class="text-muted mb-2">
+            Total Tasks
+          </p>
+
+          <h2>
+            {{ totalTasks }}
+          </h2>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- NOTES -->
+
+    <div class="col-md-6 col-lg-3">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <p class="text-muted mb-2">
+            Total Notes
+          </p>
+
+          <h2>
+            {{ totalNotes }}
+          </h2>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- RESOURCES -->
+
+    <div class="col-md-6 col-lg-3">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <p class="text-muted mb-2">
+            Total Resources
+          </p>
+
+          <h2>
+            {{ totalResources }}
+          </h2>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- USERS -->
+
+  <div class="card shadow-sm mb-5">
+
+    <div class="card-body">
+
+      <h3 class="mb-4">
+        Users
+      </h3>
+
+
+      @if (users.length === 0) {
+
+        <div class="alert alert-info">
+          No users found.
+        </div>
+
+      } @else {
+
+        <div class="table-responsive">
+
+          <table class="table table-hover align-middle">
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Name
+                </th>
+
+                <th>
+                  Role
+                </th>
+
+                <th>
+                  Joined
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (
+                user of users;
+                track user.id
+              ) {
+
+                <tr>
+
+                  <td>
+
+                    {{
+                      user.full_name ||
+                      'Student'
+                    }}
+
+                  </td>
+
+
+                  <td>
+
+                    @if (
+                      user.role === 'ADMIN'
+                    ) {
+
+                      <span class="badge bg-danger">
+
+                        ADMIN
+
+                      </span>
+
+                    } @else {
+
+                      <span class="badge bg-primary">
+
+                        USER
+
+                      </span>
+
+                    }
+
+                  </td>
+
+
+                  <td>
+
+                    @if (user.created_at) {
+
+                      {{
+                        user.created_at
+                        | date:'medium'
+                      }}
+
+                    } @else {
+
+                      -
+
+                    }
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+
+  <!-- RECENT TASKS + NOTES -->
+
+  <div class="row g-4 mb-5">
+
+
+    <!-- TASKS -->
+
+    <div class="col-lg-6">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <h3 class="mb-4">
+            Recent Tasks
+          </h3>
+
+
+          @if (
+            recentTasks.length === 0
+          ) {
+
+            <p class="text-muted">
+              No tasks found.
+            </p>
+
+          }
+
+
+         @for (task of recentTasks; track task.id) {
+
+  <div class="border-bottom py-3">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+      <strong>
+        {{ task.title }}
+      </strong>
+
+      <span class="badge bg-secondary">
+        {{ task.status }}
+      </span>
+
+    </div>
+
+    <div>
+      <small class="text-muted">
+        {{ task.category }}
+        ·
+        {{ task.priority }}
+      </small>
+    </div>
+
+    <div class="mt-1">
+      <small class="text-muted">
+
+        Posted by:
+        <strong>
+          {{ getUserName(task.user_id) }}
+        </strong>
+
+      </small>
+    </div>
+
+  </div>
+
+}
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- NOTES -->
+
+    <div class="col-lg-6">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <h3 class="mb-4">
+            Recent Notes
+          </h3>
+
+
+          @if (
+            recentNotes.length === 0
+          ) {
+
+            <p class="text-muted">
+              No notes found.
+            </p>
+
+          }
+
+
+        @for (note of recentNotes; track note.id) {
+
+  <div class="border-bottom py-3">
+
+    <strong>
+      {{ note.title }}
+    </strong>
+
+    @if (note.subject) {
+
+      <div>
+        <small class="text-muted">
+          {{ note.subject }}
+        </small>
+      </div>
+
+    }
+
+    <div class="mt-1">
+      <small class="text-muted">
+
+        Posted by:
+        <strong>
+          {{ getUserName(note.user_id) }}
+        </strong>
+
+      </small>
+    </div>
+
+    @if (note.created_at) {
+
+      <div>
+        <small class="text-muted">
+          {{ note.created_at | date:'medium' }}
+        </small>
+      </div>
+
+    }
+
+  </div>
+
+}
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- RECENT RESOURCES -->
+
+  <div class="card shadow-sm">
+
+    <div class="card-body">
+
+      <h3 class="mb-4">
+        Recent Resources
+      </h3>
+
+
+      @if (
+        recentResources.length === 0
+      ) {
+
+        <p class="text-muted">
+          No resources found.
+        </p>
+
+      }
+
+
+      @for (
+        resource of recentResources;
+        track resource.id
+      ) {
+
+        <div class="border-bottom py-3">
+
+          <div class="d-flex
+                   justify-content-between
+                   align-items-center">
+
+            <div>
+
+              <strong>
+                {{ resource.title }}
+              </strong>
+
+
+              @if (resource.subject) {
+
+                <div>
+
+                  <small class="text-muted">
+
+                    {{ resource.subject }}
+
+                  </small>
+
+                </div>
+
+              }
+<div>
+  <small class="text-muted">
+
+    Uploaded by:
+    <strong>
+      {{ getUserName(resource.user_id) }}
+    </strong>
+
+  </small>
+</div>
+            </div>
+
+
+            <span class="badge bg-secondary">
+
+              {{
+                resource.file_type ||
+                'FILE'
+              }}
+
+            </span>
+
+             <button
+        type="button"
+        class="btn btn-sm btn-primary"
+        (click)="viewResource(resource)">
+        View
+      </button>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+</div>

@@ -38,8 +38,12 @@
         File
       </label>
 
-      <input class="form-control" id="resourceFile" type="file" (change)="onFileSelected($event)">
-
+<input
+  id="resourceFile"
+  type="file"
+  class="form-control"
+  accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png,.txt"
+  (change)="onFileSelected($event)">
     </div>
 
 

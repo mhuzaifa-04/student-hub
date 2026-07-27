@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import {
@@ -34,7 +34,9 @@ export class ResourcesComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private resourceService: ResourceService
+    private resourceService: ResourceService,
+    private cdr: ChangeDetectorRef,
+    // private ngZone: NgZone
   ) {}
 
 
@@ -232,8 +234,12 @@ export class ResourcesComponent implements OnInit {
     }
 
 
-    this.resources =
-      data ?? [];
+  // this.ngZone.run(() => {
+  // });
+  this.resources = data ?? [];
+
+        this.cdr.detectChanges();
+
   }
 
 
@@ -270,6 +276,36 @@ export class ResourcesComponent implements OnInit {
       '_blank'
     );
   }
+
+  async viewResource(resource: Resource): Promise<void> {
+
+  if (!resource.file_path) {
+    console.error('File path is missing');
+    return;
+  }
+
+  const { data, error } =
+    await this.resourceService.getResourceUrl(
+      resource.file_path
+    );
+
+  if (error) {
+    console.error('Unable to open resource:', error);
+    alert('Unable to open this resource.');
+    return;
+  }
+
+  if (!data?.signedUrl) {
+    console.error('Signed URL was not generated');
+    return;
+  }
+
+  window.open(
+    data.signedUrl,
+    '_blank',
+    'noopener,noreferrer'
+  );
+}
 
 
   // ---------------------------

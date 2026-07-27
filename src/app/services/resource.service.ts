@@ -161,19 +161,16 @@ export class ResourceService {
   // GET FILE URL
   // --------------------------------
 
-  async getResourceUrl(
-    filePath: string
-  ) {
+  async getResourceUrl(filePath: string) {
 
-    // Bucket is private, so use signed URL
-    return await this.supabaseService.supabase
-      .storage
-      .from('resources')
-      .createSignedUrl(
-        filePath,
-        60 * 10
-      );
-  }
+  return await this.supabaseService.supabase
+    .storage
+    .from('resources')
+    .createSignedUrl(
+      filePath,
+      60 * 10 // valid for 10 minutes
+    );
+}
 
 
   // --------------------------------
@@ -221,4 +218,5 @@ export class ResourceService {
       );
   }
 
+  
 }
