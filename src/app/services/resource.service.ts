@@ -147,14 +147,26 @@ export class ResourceService {
 
   async getResources() {
 
-    return await this.supabaseService.supabase
-      .from('RESOURCES')
-      .select('*')
-      .order(
-        'created_at',
-        { ascending: false }
-      );
+  const {
+    data: { user },
+    error: userError
+  } = await this.supabaseService.supabase.auth.getUser();
+
+  if (userError || !user) {
+    return {
+      data: null,
+      error: userError ?? new Error('User not authenticated')
+    };
   }
+
+  return await this.supabaseService.supabase
+    .from('RESOURCES')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', {
+      ascending: false
+    });
+}
 
 
   // --------------------------------

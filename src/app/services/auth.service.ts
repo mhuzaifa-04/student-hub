@@ -33,4 +33,23 @@ export class AuthService {
   async getUser() {
     return await this.supabaseService.supabase.auth.getUser();
   }
+
+  async resetPassword(email: string) {
+
+  return await this.supabaseService.supabase.auth
+    .resetPasswordForEmail(
+      email,
+      {
+        redirectTo: `${window.location.origin}/reset-password`
+      }
+    );
+}
+
+async updatePassword(password: string) {
+
+  return await this.supabaseService.supabase.auth.updateUser({
+    password: password
+  });
+
+}
 }

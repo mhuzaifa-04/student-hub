@@ -9,12 +9,14 @@ import { AuthService } from '../services/auth.service';
 
 import { Task } from '../models/Task';
 import { Note } from '../models/Note';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    RouterLink
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'

@@ -35,15 +35,28 @@ async createTask(task: Task) {
 }
 
 
- async getTasks() {
+async getTasks() {
+
+  const {
+    data: { user },
+    error: userError
+  } = await this.supabaseService.supabase.auth.getUser();
+
+  if (userError || !user) {
+    return {
+      data: null,
+      error: userError ?? new Error('User not authenticated')
+    };
+  }
 
   return await this.supabaseService.supabase
     .from('TASKS')
     .select('*')
-    .order('created_at', { ascending: false });
-
+    .eq('user_id', user.id)
+    .order('created_at', {
+      ascending: false
+    });
 }
-  
   async updateTask(id: string, task: Partial<Task>) {
   return await this.supabaseService.supabase
     .from('TASKS')
