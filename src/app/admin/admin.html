@@ -15,7 +15,9 @@
   </div>
 
 
+  <!-- ========================================= -->
   <!-- STATISTICS -->
+  <!-- ========================================= -->
 
   <div class="row g-3 mb-5">
 
@@ -114,7 +116,9 @@
   </div>
 
 
+  <!-- ========================================= -->
   <!-- USERS -->
+  <!-- ========================================= -->
 
   <div class="card shadow-sm mb-5">
 
@@ -161,7 +165,7 @@
             <tbody>
 
               @for (
-                user of users;
+                user of paginatedUsers;
                 track user.id
               ) {
 
@@ -184,17 +188,13 @@
                     ) {
 
                       <span class="badge bg-danger">
-
                         ADMIN
-
                       </span>
 
                     } @else {
 
                       <span class="badge bg-primary">
-
                         USER
-
                       </span>
 
                     }
@@ -229,6 +229,37 @@
 
         </div>
 
+
+        <!-- USERS PAGINATION -->
+
+        @if (usersTotalPages > 1) {
+
+          <div class="d-flex justify-content-between
+                   align-items-center mt-3">
+
+            <button class="btn btn-outline-primary" type="button" [disabled]="usersPage === 1" (click)="previousUsersPage()">
+
+              Previous
+
+            </button>
+
+
+            <span>
+              Page {{ usersPage }}
+              of {{ usersTotalPages }}
+            </span>
+
+
+            <button class="btn btn-outline-primary" type="button" [disabled]="usersPage === usersTotalPages" (click)="nextUsersPage()">
+
+              Next
+
+            </button>
+
+          </div>
+
+        }
+
       }
 
     </div>
@@ -236,12 +267,16 @@
   </div>
 
 
-  <!-- RECENT TASKS + NOTES -->
+  <!-- ========================================= -->
+  <!-- TASKS + NOTES -->
+  <!-- ========================================= -->
 
   <div class="row g-4 mb-5">
 
 
+    <!-- ========================================= -->
     <!-- TASKS -->
+    <!-- ========================================= -->
 
     <div class="col-lg-6">
 
@@ -262,47 +297,101 @@
               No tasks found.
             </p>
 
+          } @else {
+
+
+            @for (
+              task of paginatedTasks;
+              track task.id
+            ) {
+
+              <div class="border-bottom py-3">
+
+                <div class="d-flex
+                         justify-content-between
+                         align-items-center">
+
+                  <strong>
+                    {{ task.title }}
+                  </strong>
+
+
+                  <span class="badge bg-secondary">
+
+                    {{ task.status }}
+
+                  </span>
+
+                </div>
+
+
+                <div>
+
+                  <small class="text-muted">
+
+                    {{ task.category }}
+
+                    ·
+
+                    {{ task.priority }}
+
+                  </small>
+
+                </div>
+
+
+                <div class="mt-1">
+
+                  <small class="text-muted">
+
+                    Posted by:
+
+                    <strong>
+                      {{ getUserName(task.user_id) }}
+                    </strong>
+
+                  </small>
+
+                </div>
+
+              </div>
+
+            }
+
+
+            <!-- TASK PAGINATION -->
+
+            @if (tasksTotalPages > 1) {
+
+              <div class="d-flex justify-content-between
+                       align-items-center mt-4">
+
+                <button class="btn btn-sm btn-outline-primary" type="button" [disabled]="tasksPage === 1" (click)="previousTasksPage()">
+
+                  Previous
+
+                </button>
+
+
+                <span>
+
+                  Page {{ tasksPage }}
+                  of {{ tasksTotalPages }}
+
+                </span>
+
+
+                <button class="btn btn-sm btn-outline-primary" type="button" [disabled]="tasksPage === tasksTotalPages" (click)="nextTasksPage()">
+
+                  Next
+
+                </button>
+
+              </div>
+
+            }
+
           }
-
-
-         @for (task of recentTasks; track task.id) {
-
-  <div class="border-bottom py-3">
-
-    <div class="d-flex justify-content-between align-items-center">
-
-      <strong>
-        {{ task.title }}
-      </strong>
-
-      <span class="badge bg-secondary">
-        {{ task.status }}
-      </span>
-
-    </div>
-
-    <div>
-      <small class="text-muted">
-        {{ task.category }}
-        ·
-        {{ task.priority }}
-      </small>
-    </div>
-
-    <div class="mt-1">
-      <small class="text-muted">
-
-        Posted by:
-        <strong>
-          {{ getUserName(task.user_id) }}
-        </strong>
-
-      </small>
-    </div>
-
-  </div>
-
-}
 
         </div>
 
@@ -311,7 +400,9 @@
     </div>
 
 
+    <!-- ========================================= -->
     <!-- NOTES -->
+    <!-- ========================================= -->
 
     <div class="col-lg-6">
 
@@ -332,51 +423,105 @@
               No notes found.
             </p>
 
+          } @else {
+
+
+            @for (
+              note of paginatedNotes;
+              track note.id
+            ) {
+
+              <div class="border-bottom py-3">
+
+                <strong>
+                  {{ note.title }}
+                </strong>
+
+
+                @if (note.subject) {
+
+                  <div>
+
+                    <small class="text-muted">
+                      {{ note.subject }}
+                    </small>
+
+                  </div>
+
+                }
+
+
+                <div class="mt-1">
+
+                  <small class="text-muted">
+
+                    Posted by:
+
+                    <strong>
+                      {{ getUserName(note.user_id) }}
+                    </strong>
+
+                  </small>
+
+                </div>
+
+
+                @if (note.created_at) {
+
+                  <div>
+
+                    <small class="text-muted">
+
+                      {{
+                        note.created_at
+                        | date:'medium'
+                      }}
+
+                    </small>
+
+                  </div>
+
+                }
+
+              </div>
+
+            }
+
+
+            <!-- NOTES PAGINATION -->
+
+            @if (notesTotalPages > 1) {
+
+              <div class="d-flex justify-content-between
+                       align-items-center mt-4">
+
+                <button class="btn btn-sm btn-outline-primary" type="button" [disabled]="notesPage === 1" (click)="previousNotesPage()">
+
+                  Previous
+
+                </button>
+
+
+                <span>
+
+                  Page {{ notesPage }}
+                  of {{ notesTotalPages }}
+
+                </span>
+
+
+                <button class="btn btn-sm btn-outline-primary" type="button" [disabled]="notesPage === notesTotalPages" (click)="nextNotesPage()">
+
+                  Next
+
+                </button>
+
+              </div>
+
+            }
+
           }
 
-
-        @for (note of recentNotes; track note.id) {
-
-  <div class="border-bottom py-3">
-
-    <strong>
-      {{ note.title }}
-    </strong>
-
-    @if (note.subject) {
-
-      <div>
-        <small class="text-muted">
-          {{ note.subject }}
-        </small>
-      </div>
-
-    }
-
-    <div class="mt-1">
-      <small class="text-muted">
-
-        Posted by:
-        <strong>
-          {{ getUserName(note.user_id) }}
-        </strong>
-
-      </small>
-    </div>
-
-    @if (note.created_at) {
-
-      <div>
-        <small class="text-muted">
-          {{ note.created_at | date:'medium' }}
-        </small>
-      </div>
-
-    }
-
-  </div>
-
-}
         </div>
 
       </div>
@@ -386,7 +531,9 @@
   </div>
 
 
-  <!-- RECENT RESOURCES -->
+  <!-- ========================================= -->
+  <!-- RESOURCES -->
+  <!-- ========================================= -->
 
   <div class="card shadow-sm">
 
@@ -405,72 +552,122 @@
           No resources found.
         </p>
 
-      }
+      } @else {
 
 
-      @for (
-        resource of recentResources;
-        track resource.id
-      ) {
+        @for (
+          resource of paginatedResources;
+          track resource.id
+        ) {
 
-        <div class="border-bottom py-3">
+          <div class="border-bottom py-3">
 
-          <div class="d-flex
-                   justify-content-between
-                   align-items-center">
-
-            <div>
-
-              <strong>
-                {{ resource.title }}
-              </strong>
+            <div class="d-flex
+                     justify-content-between
+                     align-items-center">
 
 
-              @if (resource.subject) {
+              <!-- RESOURCE INFO -->
+
+              <div>
+
+                <strong>
+                  {{ resource.title }}
+                </strong>
+
+
+                @if (resource.subject) {
+
+                  <div>
+
+                    <small class="text-muted">
+
+                      {{ resource.subject }}
+
+                    </small>
+
+                  </div>
+
+                }
+
 
                 <div>
 
                   <small class="text-muted">
 
-                    {{ resource.subject }}
+                    Uploaded by:
+
+                    <strong>
+                      {{ getUserName(resource.user_id) }}
+                    </strong>
 
                   </small>
 
                 </div>
 
-              }
-<div>
-  <small class="text-muted">
+              </div>
 
-    Uploaded by:
-    <strong>
-      {{ getUserName(resource.user_id) }}
-    </strong>
 
-  </small>
-</div>
+              <!-- FILE TYPE -->
+
+              <span class="badge bg-secondary">
+
+                {{
+                  resource.file_type ||
+                  'FILE'
+                }}
+
+              </span>
+
+
+              <!-- VIEW -->
+
+              <button class="btn btn-sm btn-primary" type="button" (click)="viewResource(resource)">
+
+                View
+
+              </button>
+
             </div>
-
-
-            <span class="badge bg-secondary">
-
-              {{
-                resource.file_type ||
-                'FILE'
-              }}
-
-            </span>
-
-             <button
-        type="button"
-        class="btn btn-sm btn-primary"
-        (click)="viewResource(resource)">
-        View
-      </button>
 
           </div>
 
-        </div>
+        }
+
+
+        <!-- RESOURCE PAGINATION -->
+
+        @if (resourcesTotalPages > 1) {
+
+          <div class="d-flex justify-content-between
+                   align-items-center mt-4">
+
+            <button class="btn btn-outline-primary" type="button" [disabled]="resourcesPage === 1" (click)="previousResourcesPage()">
+
+              Previous
+
+            </button>
+
+
+            <span>
+
+              Page {{ resourcesPage }}
+              of {{ resourcesTotalPages }}
+
+            </span>
+
+
+            <button class="btn btn-outline-primary" type="button" [disabled]="
+                resourcesPage === resourcesTotalPages
+              " (click)="nextResourcesPage()">
+
+              Next
+
+            </button>
+
+          </div>
+
+        }
 
       }
 

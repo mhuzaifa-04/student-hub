@@ -1,4 +1,4 @@
-import { ChangeDetectorRef ,Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -30,9 +30,12 @@ export class TasksComponent implements OnInit {
   taskForm!: FormGroup;
 
   searchText = '';
-selectedStatus = '';
-selectedPriority = '';
-selectedCategory = '';
+  selectedStatus = '';
+  selectedPriority = '';
+  selectedCategory = '';
+
+  currentPage = 1;
+  pageSize = 5;
 
   categories: string[] = [
     'Assignment',
@@ -62,7 +65,7 @@ selectedCategory = '';
     private cdr: ChangeDetectorRef
     // private ngZone: NgZone
 
-  ) {}
+  ) { }
 
 
   ngOnInit(): void {
@@ -157,9 +160,9 @@ selectedCategory = '';
     // });
     this.tasks = data ?? [];
 
-    console.log('Loaded tasks:', this.tasks);
+    // console.log('Loaded tasks:', this.tasks);
 
-      this.cdr.detectChanges();
+    this.cdr.detectChanges();
 
   }
 
@@ -216,7 +219,7 @@ selectedCategory = '';
         return;
       }
 
-      console.log('Task updated successfully');
+      // console.log('Task updated successfully');
 
       this.editingTaskId = null;
 
@@ -235,7 +238,7 @@ selectedCategory = '';
         return;
       }
 
-      console.log('Task created successfully');
+      // console.log('Task created successfully');
     }
 
 
@@ -258,7 +261,7 @@ selectedCategory = '';
       return;
     }
 
-    console.log('Editing task:', task);
+    // console.log('Editing task:', task);
 
     this.editingTaskId = task.id;
 
@@ -308,65 +311,103 @@ selectedCategory = '';
 
   async deleteTask(task: Task): Promise<void> {
 
-  if (!task.id) {
-    console.error('Task ID is missing');
-    return;
-  }
+    if (!task.id) {
+      console.error('Task ID is missing');
+      return;
+    }
 
-  const confirmed = confirm(
-    `Are you sure you want to delete "${task.title}"?`
-  );
-
-  if (!confirmed) {
-    return;
-  }
-
-  const { error } = await this.taskService.deleteTask(task.id);
-
-  if (error) {
-    console.error('Delete failed:', error);
-    return;
-  }
-
-  console.log('Task deleted successfully');
-
-  // If currently editing the deleted task
-  if (this.editingTaskId === task.id) {
-    this.cancelEdit();
-  }
-
-  await this.loadTasks();
-}
-
-get filteredTasks(): Task[] {
-
-  return this.tasks.filter(task => {
-
-    const search = this.searchText.toLowerCase().trim();
-
-    const matchesSearch =
-      !search ||
-      task.title.toLowerCase().includes(search) ||
-      (task.description ?? '').toLowerCase().includes(search);
-
-    const matchesStatus =
-      !this.selectedStatus ||
-      task.status === this.selectedStatus;
-
-    const matchesPriority =
-      !this.selectedPriority ||
-      task.priority === this.selectedPriority;
-
-    const matchesCategory =
-      !this.selectedCategory ||
-      task.category === this.selectedCategory;
-
-    return (
-      matchesSearch &&
-      matchesStatus &&
-      matchesPriority &&
-      matchesCategory
+    const confirmed = confirm(
+      `Are you sure you want to delete "${task.title}"?`
     );
-  });
-}
+
+    if (!confirmed) {
+      return;
+    }
+
+    const { error } = await this.taskService.deleteTask(task.id);
+
+    if (error) {
+      console.error('Delete failed:', error);
+      return;
+    }
+
+    // console.log('Task deleted successfully');
+
+    // If currently editing the deleted task
+    if (this.editingTaskId === task.id) {
+      this.cancelEdit();
+    }
+
+    await this.loadTasks();
+  }
+
+  get filteredTasks(): Task[] {
+
+    return this.tasks.filter(task => {
+
+      const search = this.searchText.toLowerCase().trim();
+
+      const matchesSearch =
+        !search ||
+        task.title.toLowerCase().includes(search) ||
+        (task.description ?? '').toLowerCase().includes(search);
+
+      const matchesStatus =
+        !this.selectedStatus ||
+        task.status === this.selectedStatus;
+
+      const matchesPriority =
+        !this.selectedPriority ||
+        task.priority === this.selectedPriority;
+
+      const matchesCategory =
+        !this.selectedCategory ||
+        task.category === this.selectedCategory;
+
+      return (
+        matchesSearch &&
+        matchesStatus &&
+        matchesPriority &&
+        matchesCategory
+      );
+    });
+  }
+
+  get paginatedTasks(): Task[] {
+
+    const startIndex =
+      (this.currentPage - 1) * this.pageSize;
+
+    const endIndex =
+      startIndex + this.pageSize;
+
+    return this.filteredTasks.slice(
+      startIndex,
+      endIndex
+    );
+  }
+
+  get totalPages(): number {
+
+    return Math.ceil(
+      this.filteredTasks.length / this.pageSize
+    );
+
+  }
+
+  nextPage(): void {
+
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+
+  }
+
+  previousPage(): void {
+
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+
+  }
 }

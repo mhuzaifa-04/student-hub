@@ -13,6 +13,8 @@ import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 import { ForgotPassword } from './auth/forgot-password/forgot-password';
 import { ResetPassword } from './auth/reset-password/reset-password';
+import { guestGuard } from './guards/guest.guard';
+import {ProfileComponent} from "./profile/profile";
 
 
 export const routes: Routes = [
@@ -23,12 +25,16 @@ export const routes: Routes = [
 
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [guestGuard]
+
   },
 
   {
     path: 'signup',
-    component: SignupComponent
+    component: SignupComponent,
+    canActivate: [guestGuard]
+
   },
 
   {
@@ -68,6 +74,11 @@ export const routes: Routes = [
     component: ResourcesComponent,
     canActivate: [authGuard]
   },
+  {
+  path: 'profile',
+  component: ProfileComponent,
+  canActivate: [authGuard]
+},
 
 
   // -------------------------

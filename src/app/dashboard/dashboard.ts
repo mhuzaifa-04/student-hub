@@ -1,32 +1,46 @@
-import { ChangeDetectorRef, ApplicationRef, Component, NgZone, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 import { ProfileService } from '../services/profile.service';
 import { TaskService } from '../services/task.service';
 import { NoteService } from '../services/note.service';
 import { ResourceService } from '../services/resource.service';
-import { AuthService } from '../services/auth.service';
 
 import { Task } from '../models/Task';
 import { Note } from '../models/Note';
-import { RouterLink } from '@angular/router';
+
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
+
   imports: [
-    CommonModule,
-    RouterLink
+    CommonModule
+    
   ],
+
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
 export class DashboardComponent implements OnInit {
 
-  // User
-  userEmail = '';
+  // =========================================
+  // USER
+  // =========================================
 
-  // Statistics
+  userName = 'Student';
+
+
+  // =========================================
+  // STATISTICS
+  // =========================================
+
   totalTasks = 0;
   pendingTasks = 0;
   completedTasks = 0;
@@ -34,204 +48,113 @@ export class DashboardComponent implements OnInit {
   totalNotes = 0;
   totalResources = 0;
 
-  // Recent data
+
+  // =========================================
+  // RECENT DATA
+  // =========================================
+
   recentTasks: Task[] = [];
   recentNotes: Note[] = [];
 
+
+  // =========================================
+  // PAGINATION
+  // =========================================
+
+  pageSize = 5;
+
+  tasksPage = 1;
+  notesPage = 1;
+
+
+  // =========================================
+  // STATE
+  // =========================================
+
   loading = true;
 
+
   constructor(
+    private profileService: ProfileService,
     private taskService: TaskService,
     private noteService: NoteService,
     private resourceService: ResourceService,
-    private authService: AuthService,
-    private cdr: ChangeDetectorRef,
-    private appRef: ApplicationRef,
-    private profileService: ProfileService
-
-    // private ngZone: NgZone
+    private cdr: ChangeDetectorRef
   ) { }
 
 
-  // async ngOnInit(): Promise<void> {
-
-  //   await this.loadDashboard();
-
-  // }
-
-  //   ngOnInit(): void {
-  //   this.loadDashboard();
-  // }
-
-  //   async loadDashboard(): Promise<void> {
-
-  //   this.loading = true;
-
-  //   try {
-
-  //     // USER
-  //     const {
-  //       data: { user }
-  //     } = await this.authService.getUser();
-
-  //     this.userEmail = user?.email ?? 'Student';
-
-
-  //     // LOAD EVERYTHING
-  //     const [
-  //       taskResponse,
-  //       noteResponse,
-  //       resourceResponse
-  //     ] = await Promise.all([
-  //       this.taskService.getTasks(),
-  //       this.noteService.getNotes(),
-  //       this.resourceService.getResources()
-  //     ]);
-
-
-  //     // TASKS
-  //     if (taskResponse.error) {
-
-  //       console.error(
-  //         'Task loading error:',
-  //         taskResponse.error
-  //       );
-
-  //     } else {
-
-  //       const tasks = taskResponse.data ?? [];
-
-  //       this.totalTasks = tasks.length;
-
-  //       this.pendingTasks = tasks.filter(
-  //         task => task.status === 'PENDING'
-  //       ).length;
-
-  //       this.completedTasks = tasks.filter(
-  //         task => task.status === 'COMPLETED'
-  //       ).length;
-
-  //       this.recentTasks = tasks.slice(0, 5);
-  //     }
-
-
-  //     // NOTES
-  //     if (noteResponse.error) {
-
-  //       console.error(
-  //         'Note loading error:',
-  //         noteResponse.error
-  //       );
-
-  //     } else {
-
-  //       const notes = noteResponse.data ?? [];
-
-  //       this.totalNotes = notes.length;
-
-  //       this.recentNotes = notes.slice(0, 5);
-  //     }
-
-
-  //     // RESOURCES
-  //     if (resourceResponse.error) {
-
-  //       console.error(
-  //         'Resource loading error:',
-  //         resourceResponse.error
-  //       );
-
-  //     } else {
-
-  //       this.totalResources =
-  //         resourceResponse.data?.length ?? 0;
-  //     }
-
-  //   } catch (error) {
-
-  //     console.error(
-  //       'Dashboard loading failed:',
-  //       error
-  //     );
-
-  //   } finally {
-
-  //     // Finish loading FIRST
-  //     this.loading = false;
-
-  //     // Then render everything
-  //     this.cdr.detectChanges();
-  //   }
-  // }
+  // =========================================
+  // INITIALIZE
+  // =========================================
 
   async ngOnInit(): Promise<void> {
 
-    console.log('Dashboard ngOnInit');
-
     await this.loadDashboard();
-    //  await this.testProfile();
 
-
-    console.log('Dashboard finished loading');
-
-    console.log({
-      totalTasks: this.totalTasks,
-      totalNotes: this.totalNotes,
-      totalResources: this.totalResources,
-      recentTasks: this.recentTasks,
-      recentNotes: this.recentNotes
-    });
   }
 
-// async testProfile(): Promise<void> {
 
-//   const { data, error } =
-//     await this.profileService.getCurrentProfile();
-
-//   if (error) {
-//     console.error('Profile error:', error);
-//     return;
-//   }
-
-//   console.log('CURRENT PROFILE:', data);
-//   console.log('ROLE:', data?.role);
-// }
+  // =========================================
+  // LOAD DASHBOARD
+  // =========================================
 
   async loadDashboard(): Promise<void> {
 
-    
+    this.loading = true;
+
     try {
 
-      // USER
+      // -----------------------------------------
+      // PROFILE
+      // -----------------------------------------
+
       const {
-        data: { user }
-      } = await this.authService.getUser();
+        data: profile,
+        error: profileError
+      } =
+        await this.profileService
+          .getCurrentProfile();
 
-      this.userEmail = user?.email ?? 'Student';
+
+      if (profileError) {
+
+        console.error(
+          'Profile loading error:',
+          profileError
+        );
+
+      } else {
+
+        this.userName =
+          profile?.full_name?.trim()
+          || '';
+
+      }
 
 
-      // FETCH ALL DATA
+      // -----------------------------------------
+      // LOAD TASKS, NOTES & RESOURCES
+      // -----------------------------------------
+
       const [
         taskResponse,
         noteResponse,
         resourceResponse
       ] = await Promise.all([
+
         this.taskService.getTasks(),
+
         this.noteService.getNotes(),
+
         this.resourceService.getResources()
+
       ]);
 
-      console.log('TASK RESPONSE:', taskResponse);
-      console.log('NOTE RESPONSE:', noteResponse);
-      console.log('RESOURCE RESPONSE:', resourceResponse);
 
-
-
-      console.log('TASK DATA:', taskResponse.data);
-      console.log('NOTE DATA:', noteResponse.data);
-      console.log('RESOURCE DATA:', resourceResponse.data);
-
+      // -----------------------------------------
       // TASKS
+      // -----------------------------------------
+
       if (taskResponse.error) {
 
         console.error(
@@ -241,23 +164,38 @@ export class DashboardComponent implements OnInit {
 
       } else {
 
-        const tasks = taskResponse.data ?? [];
+        const tasks =
+          taskResponse.data ?? [];
 
-        this.totalTasks = tasks.length;
 
-        this.pendingTasks = tasks.filter(
-          task => task.status === 'PENDING'
-        ).length;
+        this.totalTasks =
+          tasks.length;
 
-        this.completedTasks = tasks.filter(
-          task => task.status === 'COMPLETED'
-        ).length;
 
-        this.recentTasks = tasks.slice(0, 5);
+        this.pendingTasks =
+          tasks.filter(
+            task =>
+              task.status === 'PENDING'
+          ).length;
+
+
+        this.completedTasks =
+          tasks.filter(
+            task =>
+              task.status === 'COMPLETED'
+          ).length;
+
+
+        this.recentTasks =
+          tasks;
+
       }
 
 
+      // -----------------------------------------
       // NOTES
+      // -----------------------------------------
+
       if (noteResponse.error) {
 
         console.error(
@@ -267,15 +205,24 @@ export class DashboardComponent implements OnInit {
 
       } else {
 
-        const notes = noteResponse.data ?? [];
+        const notes =
+          noteResponse.data ?? [];
 
-        this.totalNotes = notes.length;
 
-        this.recentNotes = notes.slice(0, 5);
+        this.totalNotes =
+          notes.length;
+
+
+        this.recentNotes =
+          notes;
+
       }
 
 
+      // -----------------------------------------
       // RESOURCES
+      // -----------------------------------------
+
       if (resourceResponse.error) {
 
         console.error(
@@ -286,27 +233,10 @@ export class DashboardComponent implements OnInit {
       } else {
 
         this.totalResources =
-          resourceResponse.data?.length ?? 0;
+          resourceResponse.data?.length
+          ?? 0;
+
       }
-
-
-      // DEBUG
-      console.log('Dashboard:', {
-        user: this.userEmail,
-        tasks: this.totalTasks,
-        pending: this.pendingTasks,
-        completed: this.completedTasks,
-        notes: this.totalNotes,
-        resources: this.totalResources
-      });
-
-
-      // // Force Angular application to render updated state
-      // this.appRef.tick();
-
-      // Render AFTER everything has been assigned
-      this.cdr.detectChanges();
-
 
     } catch (error) {
 
@@ -315,7 +245,123 @@ export class DashboardComponent implements OnInit {
         error
       );
 
+    } finally {
+
+      this.loading = false;
+
+      // Render all async Supabase updates
+      this.cdr.detectChanges();
+
     }
 
   }
+
+
+  // =========================================
+  // TASK PAGINATION
+  // =========================================
+
+  get paginatedTasks(): Task[] {
+
+    const start =
+      (this.tasksPage - 1)
+      * this.pageSize;
+
+
+    return this.recentTasks.slice(
+      start,
+      start + this.pageSize
+    );
+
+  }
+
+
+  get tasksTotalPages(): number {
+
+    return Math.ceil(
+      this.recentTasks.length
+      / this.pageSize
+    );
+
+  }
+
+
+  previousTasksPage(): void {
+
+    if (this.tasksPage > 1) {
+
+      this.tasksPage--;
+
+    }
+
+  }
+
+
+  nextTasksPage(): void {
+
+    if (
+      this.tasksPage
+      < this.tasksTotalPages
+    ) {
+
+      this.tasksPage++;
+
+    }
+
+  }
+
+
+  // =========================================
+  // NOTES PAGINATION
+  // =========================================
+
+  get paginatedNotes(): Note[] {
+
+    const start =
+      (this.notesPage - 1)
+      * this.pageSize;
+
+
+    return this.recentNotes.slice(
+      start,
+      start + this.pageSize
+    );
+
+  }
+
+
+  get notesTotalPages(): number {
+
+    return Math.ceil(
+      this.recentNotes.length
+      / this.pageSize
+    );
+
+  }
+
+
+  previousNotesPage(): void {
+
+    if (this.notesPage > 1) {
+
+      this.notesPage--;
+
+    }
+
+  }
+
+
+  nextNotesPage(): void {
+
+    if (
+      this.notesPage
+      < this.notesTotalPages
+    ) {
+
+      this.notesPage++;
+
+    }
+
+  }
+
 }

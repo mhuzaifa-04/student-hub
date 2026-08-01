@@ -75,7 +75,7 @@ async onSubmit(): Promise<void> {
     return;
   }
 
-  console.log('Logged in:', data.user);
+  // console.log('Logged in:', data.user);
 
 
   // Get logged-in user's profile

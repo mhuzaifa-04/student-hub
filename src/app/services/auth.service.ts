@@ -8,15 +8,34 @@ export class AuthService {
 
   constructor(private supabaseService: SupabaseService) {}
 
-  async signUp(email: string, password: string) {
+ async signUp(
+  fullName: string,
+  email: string,
+  password: string
+) {
+
   return await this.supabaseService.supabase.auth.signUp({
+
     email,
-    password
+    password,
+
+    options: {
+
+      data: {
+
+        full_name: fullName
+
+      }
+
+    }
+
   });
+
 }
 
   async login(email: string, password: string) {
     return await this.supabaseService.supabase.auth.signInWithPassword({
+      
       email,
       password
     });
@@ -31,6 +50,10 @@ export class AuthService {
   }
 
   async getUser() {
+    return await this.supabaseService.supabase.auth.getUser();
+  }
+
+  async getUserName() {
     return await this.supabaseService.supabase.auth.getUser();
   }
 

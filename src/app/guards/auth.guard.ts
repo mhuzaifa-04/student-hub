@@ -57,7 +57,7 @@ export const authGuard: CanActivateFn = async () => {
     const { data, error } =
       await authService.getSession();
 
-    console.log('GUARD SESSION:', data.session);
+    // console.log('GUARD SESSION:', data.session);
 
     if (error) {
       console.error('Session error:', error);

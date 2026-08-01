@@ -7,6 +7,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
+import { ProfileService } from '../../services/profile.service';
 
 @Component({
   selector: 'app-signup',
@@ -29,10 +30,19 @@ export class SignupComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private profileService: ProfileService,
     private router: Router
   ) {
 
     this.signupForm = this.fb.nonNullable.group({
+
+      fullName: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3)
+        ]
+      ],
 
       email: [
         '',
@@ -52,9 +62,7 @@ export class SignupComponent {
 
       confirmPassword: [
         '',
-        [
-          Validators.required
-        ]
+        Validators.required
       ]
 
     });
@@ -69,56 +77,96 @@ export class SignupComponent {
       return;
     }
 
+    this.errorMessage = '';
+    this.successMessage = '';
+
     const {
+      fullName,
       email,
       password,
       confirmPassword
     } = this.signupForm.getRawValue();
 
 
+    // Password validation
     if (password !== confirmPassword) {
-      this.errorMessage = 'Passwords do not match.';
+
+      this.errorMessage =
+        'Passwords do not match.';
+
       return;
+
     }
 
 
     this.loading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
+
+    try {
+
+      // Create auth user
+     const { data, error } =
+  await this.authService.signUp(
+    fullName,
+    email,
+    password
+  );
+
+      if (error) {
+
+        this.errorMessage = error.message;
+
+        console.error(
+          'Signup Error:',
+          error
+        );
+
+        return;
+      }
+
+// console
+//       .log(
+//         'Signup successful:',
+//         data
+//       );
 
 
-    const { data, error } =
-      await this.authService.signUp(email, password);
+     
+
+      // Email confirmation enabled
+      if (!data.session) {
+
+        this.successMessage =
+          'Account created successfully. Please verify your email before logging in.';
+
+        return;
+
+      }
 
 
-    this.loading = false;
+      // Direct login
+      await this.router.navigate([
+        '/dashboard'
+      ]);
 
-
-    if (error) {
-
-      this.errorMessage = error.message;
-
-      console.error('Signup Error:', error);
-
-      return;
     }
 
+    catch (error) {
 
-    console.log('Signup successful:', data);
+      console.error(
+        'Unexpected signup error:',
+        error
+      );
 
+      this.errorMessage =
+        'Something went wrong. Please try again.';
 
-    // If Supabase created a session immediately
-    if (data.session) {
-
-      await this.router.navigate(['/dashboard']);
-
-      return;
     }
 
+    finally {
 
-    // Email confirmation may be enabled
-    this.successMessage =
-      'Account created. Check your email to confirm your account.';
+      this.loading = false;
+
+    }
 
   }
 

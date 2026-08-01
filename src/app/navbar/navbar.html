@@ -2,27 +2,19 @@
 
   <div class="container">
 
-    <a
-      class="navbar-brand"
-      routerLink="/dashboard">
+    <a class="navbar-brand" routerLink="/dashboard">
       Student Hub
     </a>
 
 
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#studentHubNavbar">
+    <button class="navbar-toggler" data-bs-target="#studentHubNavbar" data-bs-toggle="collapse" type="button">
 
       <span class="navbar-toggler-icon"></span>
 
     </button>
 
 
-    <div
-      class="collapse navbar-collapse"
-      id="studentHubNavbar">
+    <div class="collapse navbar-collapse" id="studentHubNavbar">
 
 
       <!-- LEFT -->
@@ -31,10 +23,7 @@
 
         <li class="nav-item">
 
-          <a
-            class="nav-link"
-            routerLink="/dashboard"
-            routerLinkActive="active">
+          <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
 
             Dashboard
 
@@ -45,10 +34,7 @@
 
         <li class="nav-item">
 
-          <a
-            class="nav-link"
-            routerLink="/tasks"
-            routerLinkActive="active">
+          <a class="nav-link" routerLink="/tasks" routerLinkActive="active">
 
             Tasks
 
@@ -59,10 +45,7 @@
 
         <li class="nav-item">
 
-          <a
-            class="nav-link"
-            routerLink="/notes"
-            routerLinkActive="active">
+          <a class="nav-link" routerLink="/notes" routerLinkActive="active">
 
             Notes
 
@@ -70,13 +53,20 @@
 
         </li>
 
+        <li class="nav-item">
+
+  <a class="nav-link" routerLink="/profile" routerLinkActive="active">
+
+    Profile
+
+  </a>
+
+</li>
+
 
         <li class="nav-item">
 
-          <a
-            class="nav-link"
-            routerLink="/resources"
-            routerLinkActive="active">
+          <a class="nav-link" routerLink="/resources" routerLinkActive="active">
 
             Resources
 
@@ -89,10 +79,7 @@
 
           <li class="nav-item">
 
-            <a
-              class="nav-link"
-              routerLink="/admin"
-              routerLinkActive="active">
+            <a class="nav-link" routerLink="/admin" routerLinkActive="active">
 
               Admin
 
@@ -122,10 +109,7 @@
         </span>
 
 
-        <button
-          type="button"
-          class="btn btn-outline-light btn-sm"
-          (click)="logout()">
+        <button class="btn btn-outline-light btn-sm" type="button" (click)="logout()">
 
           Logout
 

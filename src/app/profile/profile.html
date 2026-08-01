@@ -1,0 +1,152 @@
+<div class="container mt-5">
+
+  <div class="row justify-content-center">
+
+    <div class="col-md-8 col-lg-6">
+
+      <div class="card">
+
+        <div class="card-body">
+
+          <h2 class="mb-4">
+            My Profile
+          </h2>
+
+
+          @if (errorMessage) {
+
+            <div class="alert alert-danger">
+              {{ errorMessage }}
+            </div>
+
+          }
+
+
+          @if (successMessage) {
+
+            <div class="alert alert-success">
+              {{ successMessage }}
+            </div>
+
+          }
+
+
+          <form
+            [formGroup]="profileForm"
+            (ngSubmit)="updateProfile()">
+
+
+            <!-- FULL NAME -->
+
+            <div class="mb-3">
+
+              <label class="form-label">
+                Full Name
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                formControlName="fullName"
+                [readonly]="!editing">
+
+
+              @if (
+                profileForm.controls.fullName.touched &&
+                profileForm.controls.fullName.hasError('required')
+              ) {
+
+                <small class="text-danger">
+                  Full name is required.
+                </small>
+
+              }
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="mb-3">
+
+              <label class="form-label">
+                Email
+              </label>
+
+              <input
+                type="email"
+                class="form-control"
+                [value]="email"
+                readonly>
+
+            </div>
+
+
+            <!-- ROLE -->
+
+            <div class="mb-4">
+
+              <label class="form-label">
+                Role
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                [value]="role"
+                readonly>
+
+            </div>
+
+
+            <!-- VIEW MODE -->
+
+            @if (!editing) {
+
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="enableEdit()">
+
+                Edit Profile
+
+              </button>
+
+            }
+
+
+            <!-- EDIT MODE -->
+
+            @if (editing) {
+
+              <button
+                type="submit"
+                class="btn btn-success">
+
+                Save Changes
+
+              </button>
+
+
+              <button
+                type="button"
+                class="btn btn-secondary ms-2"
+                (click)="cancelEdit()">
+
+                Cancel
+
+              </button>
+
+            }
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

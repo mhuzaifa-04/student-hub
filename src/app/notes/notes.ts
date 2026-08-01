@@ -32,6 +32,8 @@ export class NotesComponent implements OnInit {
 
   // Search
   searchText = '';
+  currentPage = 1;
+pageSize = 5;
 
   // Form
   noteForm!: FormGroup;
@@ -116,7 +118,7 @@ export class NotesComponent implements OnInit {
     // });
     this.notes = data ?? [];
 
-    console.log('Loaded notes:', this.notes);
+    // console.log('Loaded notes:', this.notes);
 
       this.cdr.detectChanges();
 
@@ -170,9 +172,9 @@ export class NotesComponent implements OnInit {
         return;
       }
 
-      console.log(
-        'Note updated successfully'
-      );
+      // console.log(
+      //   'Note updated successfully'
+      // );
 
       this.editingNoteId = null;
 
@@ -196,9 +198,9 @@ export class NotesComponent implements OnInit {
         return;
       }
 
-      console.log(
-        'Note created successfully'
-      );
+      // console.log(
+      //   'Note created successfully'
+      // );
     }
 
 
@@ -301,9 +303,9 @@ export class NotesComponent implements OnInit {
     }
 
 
-    console.log(
-      'Note deleted successfully'
-    );
+    // (
+    //   'Note deleted successfully'
+    // );console.log
 
 
     // If deleting note currently being edited
@@ -360,5 +362,37 @@ export class NotesComponent implements OnInit {
     );
 
   }
+
+  get paginatedNotes(): Note[] {
+
+  const startIndex =
+    (this.currentPage - 1) * this.pageSize;
+
+  return this.filteredNotes.slice(
+    startIndex,
+    startIndex + this.pageSize
+  );
+}
+
+get totalPages(): number {
+
+  return Math.ceil(
+    this.filteredNotes.length / this.pageSize
+  );
+}
+
+nextPage(): void {
+
+  if (this.currentPage < this.totalPages) {
+    this.currentPage++;
+  }
+}
+
+previousPage(): void {
+
+  if (this.currentPage > 1) {
+    this.currentPage--;
+  }
+}
 
 }

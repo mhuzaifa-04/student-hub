@@ -14,36 +14,6 @@ export class ProfileService {
   ) {}
 
 
-  async getCurrentProfile() {
-
-    const {
-      data: { user },
-      error: userError
-    } =
-      await this.supabaseService.supabase
-        .auth
-        .getUser();
-
-
-    if (userError || !user) {
-
-      return {
-        data: null,
-        error:
-          userError ??
-          new Error('User not authenticated')
-      };
-
-    }
-
-
-    return await this.supabaseService.supabase
-      .from('PROFILES')
-      .select('*')
-      .eq('id', user.id)
-      .single<Profile>();
-  }
-
 
   async isAdmin(): Promise<boolean> {
 
@@ -62,4 +32,50 @@ export class ProfileService {
     return data.role === 'ADMIN';
   }
 
+
+ async getCurrentProfile() {
+
+  const {
+    data: { user },
+    error: userError
+  } = await this.supabaseService.supabase.auth.getUser();
+
+  if (userError || !user) {
+    return {
+      data: null,
+      error: userError ?? new Error('User not authenticated')
+    };
+  }
+
+  return await this.supabaseService.supabase
+    .from('PROFILES')
+    .select('*')
+    .eq('id', user.id)
+    .single();
+}
+
+
+async updateCurrentProfile(fullName: string) {
+
+  const {
+    data: { user },
+    error: userError
+  } = await this.supabaseService.supabase.auth.getUser();
+
+  if (userError || !user) {
+    return {
+      data: null,
+      error: userError ?? new Error('User not authenticated')
+    };
+  }
+
+  return await this.supabaseService.supabase
+    .from('PROFILES')
+    .update({
+      full_name: fullName
+    })
+    .eq('id', user.id)
+    .select()
+    .single();
+}
 }

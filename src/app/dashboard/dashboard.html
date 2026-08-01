@@ -1,20 +1,15 @@
 <div class="container py-5">
- 
-<a routerLink="/dashboard">Dashboard</a>
-<a routerLink="/tasks">Tasks</a>
-<a routerLink="/notes">Notes</a>
-<a routerLink="/resources">Resources</a>  <div class="mb-4">
 
-    <h1>
-      Dashboard
-    </h1>
+  <h1>
+    Dashboard
+  </h1>
 
-    <p class="text-muted">
-      Welcome, {{ userEmail }}
-    </p>
+  <p class="text-muted">
+    Welcome, {{ userName }}
+  </p>
 
-  </div>
-
+</div>
+<div class="container py-5">
 
   <!-- STATISTICS -->
 
@@ -131,63 +126,131 @@
 
   <div class="row g-4">
 
-    <!-- RECENT TASKS -->
+<!-- RECENT TASKS -->
 
-    <div class="col-lg-6">
+<div class="col-lg-6">
 
-      <div class="card shadow-sm h-100">
+  <div class="card shadow-sm h-100">
 
-        <div class="card-body">
+    <div class="card-body">
 
-          <h4 class="mb-4">
-            Recent Tasks
-          </h4>
-
-
-          @if (recentTasks.length === 0) {
-
-            <p class="text-muted">
-              No tasks yet.
-            </p>
-
-          }
+      <h4 class="mb-4">
+        Recent Tasks
+      </h4>
 
 
-          @for (task of recentTasks; track task.id) {
+      <!-- NO TASKS -->
 
-            <div class="border-bottom py-3">
+      @if (recentTasks.length === 0) {
 
-              <div
-                class="d-flex justify-content-between align-items-center">
+        <p class="text-muted">
+          No tasks yet.
+        </p>
 
-                <strong>
-                  {{ task.title }}
-                </strong>
+      } @else {
 
-                <span class="badge bg-secondary">
-                  {{ task.status }}
-                </span>
 
-              </div>
+        <!-- TASK LIST -->
+
+        @for (
+          task of paginatedTasks;
+          track task.id
+        ) {
+
+          <div class="border-bottom py-3">
+
+            <div
+              class="d-flex
+                     justify-content-between
+                     align-items-center">
+
+              <strong>
+                {{ task.title }}
+              </strong>
+
+
+              <span class="badge bg-secondary">
+                {{ task.status }}
+              </span>
+
+            </div>
+
+
+            <div>
 
               <small class="text-muted">
 
                 {{ task.category }}
+
                 ·
+
                 {{ task.priority }}
 
               </small>
 
             </div>
 
-          }
+          </div>
 
-        </div>
+        }
 
-      </div>
+
+        <!-- TASK PAGINATION -->
+
+        @if (tasksTotalPages > 1) {
+
+          <div
+            class="d-flex
+                   justify-content-between
+                   align-items-center
+                   mt-4">
+
+            <!-- PREVIOUS -->
+
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary"
+              [disabled]="tasksPage === 1"
+              (click)="previousTasksPage()">
+
+              Previous
+
+            </button>
+
+
+            <!-- PAGE NUMBER -->
+
+            <span>
+
+              Page {{ tasksPage }}
+              of {{ tasksTotalPages }}
+
+            </span>
+
+
+            <!-- NEXT -->
+
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary"
+              [disabled]="tasksPage === tasksTotalPages"
+              (click)="nextTasksPage()">
+
+              Next
+
+            </button>
+
+          </div>
+
+        }
+
+      }
 
     </div>
 
+  </div>
+
+</div>
 
     <!-- RECENT NOTES -->
 
@@ -211,45 +274,82 @@
           }
 
 
-          @for (note of recentNotes; track note.id) {
+         @for (
+              note of paginatedNotes; track note.id ) {
 
-            <div class="border-bottom py-3">
+              <div class="border-bottom py-3">
 
-              <strong>
-                {{ note.title }}
-              </strong>
-
-
-              @if (note.subject) {
-
-                <div>
-
-                  <small class="text-muted">
-                    {{ note.subject }}
-                  </small>
-
-                </div>
-
-              }
+                <strong>
+                  {{ note.title }}
+                </strong>
 
 
-              @if (note.created_at) {
+                @if (note.subject) {
 
-                <div>
+                  <div>
 
-                  <small class="text-muted">
+                    <small class="text-muted">
+                      {{ note.subject }}
+                    </small>
 
-                    {{ note.created_at | date:'medium' }}
+                  </div>
 
-                  </small>
+                }
 
-                </div>
 
-              }
 
-            </div>
+                @if (note.created_at) {
 
-          }
+                  <div>
+
+                    <small class="text-muted">
+
+                      {{
+                        note.created_at
+                        | date:'medium'
+                      }}
+
+                    </small>
+
+                  </div>
+
+                }
+
+              </div>
+
+            }
+
+             <!-- NOTES PAGINATION -->
+
+            @if (notesTotalPages > 1) {
+
+              <div class="d-flex justify-content-between
+                       align-items-center mt-4">
+
+                <button class="btn btn-sm btn-outline-primary" type="button" [disabled]="notesPage === 1" (click)="previousNotesPage()">
+
+                  Previous
+
+                </button>
+
+
+                <span>
+
+                  Page {{ notesPage }}
+                  of {{ notesTotalPages }}
+
+                </span>
+
+
+                <button class="btn btn-sm btn-outline-primary" type="button" [disabled]="notesPage === notesTotalPages" (click)="nextNotesPage()">
+
+                  Next
+
+                </button>
+
+              </div>
+
+            }
 
         </div>
 
@@ -257,6 +357,5 @@
 
     </div>
 
-  </div>
-
+</div>
 </div>

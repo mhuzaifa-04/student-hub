@@ -26,6 +26,8 @@ export class ResourcesComponent implements OnInit {
   resourceForm!: FormGroup;
 
   resources: Resource[] = [];
+  currentPage = 1;
+  pageSize = 5;
 
   selectedFile: File | null = null;
 
@@ -106,10 +108,10 @@ export class ResourcesComponent implements OnInit {
 
     this.selectedFile = file;
 
-    console.log(
-      'Selected file:',
-      file
-    );
+  //  console.log (
+  //     'Selected file:',
+  //     file
+  //   );
   }
 
 
@@ -167,9 +169,9 @@ export class ResourcesComponent implements OnInit {
       }
 
 
-      console.log(
-        'Resource uploaded successfully'
-      );
+      // console.log(
+      //   'Resource uploaded successfully'
+      // );
 
 
       this.resourceForm.reset();
@@ -324,6 +326,7 @@ export class ResourcesComponent implements OnInit {
 
       return;
     }
+    
 
 
     const { error } =
@@ -344,6 +347,53 @@ export class ResourcesComponent implements OnInit {
 
 
     await this.loadResources();
+    if (
+  this.currentPage > this.totalPages &&
+  this.currentPage > 1
+) {
+  this.currentPage--;
+}
   }
 
+  // ---------------------------
+// PAGINATION
+// ---------------------------
+
+get paginatedResources(): Resource[] {
+
+  const startIndex =
+    (this.currentPage - 1) * this.pageSize;
+
+  return this.resources.slice(
+    startIndex,
+    startIndex + this.pageSize
+  );
+}
+
+
+get totalPages(): number {
+
+  return Math.ceil(
+    this.resources.length / this.pageSize
+  );
+
+}
+
+
+nextPage(): void {
+
+  if (this.currentPage < this.totalPages) {
+    this.currentPage++;
+  }
+
+}
+
+
+previousPage(): void {
+
+  if (this.currentPage > 1) {
+    this.currentPage--;
+  }
+
+}
 }

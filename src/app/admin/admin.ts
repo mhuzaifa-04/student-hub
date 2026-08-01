@@ -32,6 +32,13 @@ export class Admin implements OnInit {
   totalNotes = 0;
   totalResources = 0;
 
+  pageSize = 3;
+
+usersPage = 1;
+tasksPage = 1;
+notesPage = 1;
+resourcesPage = 1;
+
   // -------------------------
   // DATA
   // -------------------------
@@ -106,7 +113,7 @@ export class Admin implements OnInit {
           tasks.length;
 
         this.recentTasks =
-          tasks.slice(0, 5);
+          tasks;
       }
 
 
@@ -127,7 +134,7 @@ export class Admin implements OnInit {
           notes.length;
 
         this.recentNotes =
-          notes.slice(0, 5);
+          notes;
       }
 
 
@@ -148,7 +155,7 @@ export class Admin implements OnInit {
           resources.length;
 
         this.recentResources =
-          resources.slice(0, 5);
+          resources;
       }
 
 
@@ -212,6 +219,98 @@ export class Admin implements OnInit {
   );
 
   return user?.full_name || 'Student';
+}
+
+// =========================
+// ADMIN PAGINATION
+// =========================
+get paginatedUsers() {
+  const start = (this.usersPage - 1) * this.pageSize;
+  return this.users.slice(start, start + this.pageSize);
+}
+
+get usersTotalPages(): number {
+  return Math.ceil(this.users.length / this.pageSize);
+}
+
+
+get paginatedTasks() {
+  const start = (this.tasksPage - 1) * this.pageSize;
+  return this.recentTasks.slice(start, start + this.pageSize);
+}
+
+get tasksTotalPages(): number {
+  return Math.ceil(this.recentTasks.length / this.pageSize);
+}
+
+
+get paginatedNotes() {
+  const start = (this.notesPage - 1) * this.pageSize;
+  return this.recentNotes.slice(start, start + this.pageSize);
+}
+
+get notesTotalPages(): number {
+  return Math.ceil(this.recentNotes.length / this.pageSize);
+}
+
+
+get paginatedResources() {
+  const start = (this.resourcesPage - 1) * this.pageSize;
+  return this.recentResources.slice(start, start + this.pageSize);
+}
+
+get resourcesTotalPages(): number {
+  return Math.ceil(this.recentResources.length / this.pageSize);
+}
+
+
+///Navigation
+previousUsersPage(): void {
+  if (this.usersPage > 1) {
+    this.usersPage--;
+  }
+}
+
+nextUsersPage(): void {
+  if (this.usersPage < this.usersTotalPages) {
+    this.usersPage++;
+  }
+}
+
+previousTasksPage(): void {
+  if (this.tasksPage > 1) {
+    this.tasksPage--;
+  }
+}
+
+nextTasksPage(): void {
+  if (this.tasksPage < this.tasksTotalPages) {
+    this.tasksPage++;
+  }
+}
+
+previousNotesPage(): void {
+  if (this.notesPage > 1) {
+    this.notesPage--;
+  }
+}
+
+nextNotesPage(): void {
+  if (this.notesPage < this.notesTotalPages) {
+    this.notesPage++;
+  }
+}
+
+previousResourcesPage(): void {
+  if (this.resourcesPage > 1) {
+    this.resourcesPage--;
+  }
+}
+
+nextResourcesPage(): void {
+  if (this.resourcesPage < this.resourcesTotalPages) {
+    this.resourcesPage++;
+  }
 }
 
 }

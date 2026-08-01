@@ -181,10 +181,7 @@
 
   <!-- NOTES -->
 
-  @for (
-    note of filteredNotes;
-    track note.id
-  ) {
+@for (note of paginatedNotes; track note.id) {
 
     <div class="card mb-3">
 
@@ -264,7 +261,40 @@
       </div>
 
     </div>
-
   }
+
+    @if (filteredNotes.length > 0) {
+
+  <div class="d-flex justify-content-between align-items-center mt-4 mb-5">
+
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      [disabled]="currentPage === 1"
+      (click)="previousPage()">
+
+      Previous
+
+    </button>
+
+    <span>
+      Page {{ currentPage }} of {{ totalPages }}
+    </span>
+
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      [disabled]="currentPage === totalPages"
+      (click)="nextPage()">
+
+      Next
+
+    </button>
+
+  </div>
+
+}
+
+  
 
 </div>

@@ -170,17 +170,11 @@
 <div class="row g-2 mb-4">
 
   <div class="col-md-3">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Search tasks..."
-      [(ngModel)]="searchText">
+    <input class="form-control" type="text" placeholder="Search tasks..." [(ngModel)]="searchText">
   </div>
 
   <div class="col-md-3">
-    <select
-      class="form-select"
-      [(ngModel)]="selectedCategory">
+    <select class="form-select" [(ngModel)]="selectedCategory">
 
       <option value="">All Categories</option>
 
@@ -194,9 +188,7 @@
   </div>
 
   <div class="col-md-3">
-    <select
-      class="form-select"
-      [(ngModel)]="selectedPriority">
+    <select class="form-select" [(ngModel)]="selectedPriority">
 
       <option value="">All Priorities</option>
 
@@ -210,9 +202,7 @@
   </div>
 
   <div class="col-md-3">
-    <select
-      class="form-select"
-      [(ngModel)]="selectedStatus">
+    <select class="form-select" [(ngModel)]="selectedStatus">
 
       <option value="">All Statuses</option>
 
@@ -242,9 +232,10 @@
 
 } @else {
 
-    @for (task of filteredTasks; track task.id) {
-
+@for (task of paginatedTasks; track task.id) {
       <div class="card mb-3">
+
+        
 
         <div class="card-body">
 
@@ -312,9 +303,48 @@
   Delete
 </button>
 
+
+
         </div>
+        
+        
 
       </div>
+      @if (filteredTasks.length > 0) {
+
+  <div
+    class="d-flex justify-content-between
+           align-items-center mt-4 mb-5">
+
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      [disabled]="currentPage === 1"
+      (click)="previousPage()">
+
+      Previous
+
+    </button>
+
+
+    <span>
+      Page {{ currentPage }} of {{ totalPages }}
+    </span>
+
+
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      [disabled]="currentPage === totalPages"
+      (click)="nextPage()">
+
+      Next
+
+    </button>
+
+  </div>
+
+}
 
     }
 
